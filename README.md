@@ -5,6 +5,7 @@ Este proyecto es una aplicación web desarrollada como parte de un desafío téc
 
 * **Framework:** Next.js 15 (App Router)
 * **Lenguaje:** TypeScript
+* **Backend & Database:** Supabase (Integración para la persistencia de datos y gestión de servicios)
 * **Estilos:** Tailwind CSS
 * **Despliegue:** Vercel
 
