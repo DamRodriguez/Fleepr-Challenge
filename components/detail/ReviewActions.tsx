@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import showToast from '../toast/showToast';
 
 interface Props {
   onAction: (status: 'approved' | 'rejected', feedback?: string) => void;
@@ -28,7 +29,10 @@ export function ReviewActions({ onAction }: Props) {
           <button onClick={() => setShowFeedback(false)} className="text-slate-500 font-bold py-2 px-6 hover:bg-slate-100 rounded-xl cursor-pointer">Cancel</button>
           <button
             disabled={!feedback.trim()}
-            onClick={() => onAction('rejected', feedback)}
+            onClick={() => {
+              onAction('rejected', feedback);
+              showToast('success', 'Change request submitted');
+            }}
             className="bg-rose-600 text-white font-bold py-2 px-8 rounded-xl hover:bg-rose-700 disabled:opacity-30 cursor-pointer"
           >
             Submit Rejection
@@ -40,11 +44,22 @@ export function ReviewActions({ onAction }: Props) {
 
   return (
     <div className="flex flex-col sm:flex-row gap-4">
-      <button onClick={() => onAction('approved')} className="flex-1 bg-blue-600 text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-2 hover:bg-blue-700 shadow-lg shadow-blue-600/20 cursor-pointer">
-        <CheckCircle size={20} /> Approve Content
+      <button
+        onClick={() => {
+          onAction('approved');
+          showToast('success', 'Content approved successfully');
+        }}
+        className="flex-1 bg-blue-600 text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-2 hover:bg-blue-700 shadow-lg shadow-blue-600/20 cursor-pointer"
+      >
+        <CheckCircle size={20} />
+        Approve Content
       </button>
-      <button onClick={() => setShowFeedback(true)} className="flex-1 bg-white border-2 border-rose-100 text-rose-600 font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-2 hover:bg-rose-50 cursor-pointer">
-        <XCircle size={20} /> Request Changes
+      <button
+        onClick={() => setShowFeedback(true)}
+        className="flex-1 bg-white border-2 border-rose-100 text-rose-600 font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-2 hover:bg-rose-50 cursor-pointer"
+      >
+        <XCircle size={20} />
+        Request Changes
       </button>
     </div>
   );

@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
+import showToast from '@/components/toast/showToast';
 
 export type ContentPiece = {
   id: string;
@@ -22,12 +23,15 @@ export function useAgencyDashboard() {
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (!error && data) setPieces(data as ContentPiece[]);
+    if (error) {
+      showToast('error', 'Error fetching content pieces');
+      return;
+    }
+    if (data) setPieces(data as ContentPiece[]);
   };
 
   useEffect(() => {
     fetchPieces();
-
     const channel = supabase
       .channel('schema-db-changes')
       .on(
@@ -44,7 +48,10 @@ export function useAgencyDashboard() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title || !videoUrl) return;
+    if (!title || !videoUrl) {
+      showToast('warning', 'Please fill in all fields');
+      return;
+    }
 
     setLoading(true);
     const { error } = await supabase
@@ -52,8 +59,12 @@ export function useAgencyDashboard() {
       .insert([{ title, video_url: videoUrl }]);
 
     if (!error) {
+      showToast('success', 'Content created successfully');
       setTitle('');
       setVideoUrl('');
+    } else {
+      showToast('error', 'Error creating content piece');
+      console.error(error);
     }
     setLoading(false);
   };
@@ -62,8 +73,14 @@ export function useAgencyDashboard() {
     e.preventDefault();
     e.stopPropagation();
     const url = `${window.location.origin}/review/${id}`;
-    navigator.clipboard.writeText(url);
-    alert('Link copied to clipboard!');
+
+    navigator.clipboard.writeText(url)
+      .then(() => {
+        showToast('success', 'Link copied to clipboard!');
+      })
+      .catch(() => {
+        showToast('error', 'Failed to copy the link');
+      });
   };
 
   const stats = {
