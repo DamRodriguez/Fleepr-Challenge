@@ -9,7 +9,7 @@ const showToast = (type: ToastProps["type"], text: ToastProps["text"], manualClo
     ),
     {
       position: "top-right",
-      autoClose: 25000,
+      autoClose: 2500,
       closeButton: false,
     },
   );
